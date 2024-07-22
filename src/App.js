@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import BlogPostList from "./page/BlogPostList";
+import BlogPostDetails from "./page/BlogPostDetails";
+import { Box } from "@mui/material";
 
-function App() {
+const App = () => {
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await axios.get(
+        `https://newsapi.org/v2/everything?q=technology&apiKey=21d5d3a03d734129b73a836f45ad56d5&page=${page}`
+      );
+      setPosts(response.data.articles);
+    };
+    fetchPosts();
+  }, [page]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box sx={{ width: "100vw" }}>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <BlogPostList posts={posts} setPage={setPage} page={page} />
+            }
+          />
+          <Route path="/post/:id" element={<BlogPostDetails posts={posts} />} />
+        </Routes>
+      </Router>
+    </Box>
   );
-}
+};
 
 export default App;
