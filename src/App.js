@@ -11,10 +11,14 @@ const App = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await axios.get(
-        `https://newsapi.org/v2/everything?q=technology&apiKey=21d5d3a03d734129b73a836f45ad56d5&page=${page}`
-      );
-      setPosts(response.data.articles);
+      try {
+        const response = await axios.get(
+          `https://newsapi.org/v2/everything?q=technology&apiKey=21d5d3a03d734129b73a836f45ad56d5&page=${page}`
+        );
+        setPosts(response.data.articles);
+      } catch (error) {
+        console.log("20", error);
+      }
     };
     fetchPosts();
   }, [page]);
@@ -24,7 +28,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route
-            path="/"
+            path="/bolg-post"
             element={
               <BlogPostList posts={posts} setPage={setPage} page={page} />
             }
